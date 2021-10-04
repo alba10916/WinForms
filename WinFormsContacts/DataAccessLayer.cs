@@ -9,7 +9,7 @@ namespace WinFormsContacts
 {
     class DataAccessLayer
     {
-        private SqlConnection conn = new SqlConnection("");
+        private SqlConnection conn = new SqlConnection("Integrated Security = SSPI; Persist Security Info=False;Initial Catalog = WinFormsContacts; Data Source = LAPTOP-CFEQHIPT\\SQLEXPRESS");
 
         public void InsertContacto(Contacto contacto)
         {
@@ -20,7 +20,7 @@ namespace WinFormsContacts
             {
                 conn.Open();
                 string query = @"
-                    INSERT INTO Contactos (Nombre, Apellidos, Telefono, Direccion)
+                    INSERT INTO Contact (FirstName, LastName, Phone, Address)
                     VALUES (@Nombre, @Apellidos, @Telefono, @Direccion);
                 ";
 
@@ -69,11 +69,11 @@ namespace WinFormsContacts
             {
                 conn.Open();
                 string query = @"
-                    UPDATE Contactos SET
-                        Nombre = @Nombre,
-                        Apellidos = @Apellidos, 
-                        Telefono = @Telefono, 
-                        Direccion = @Direccion
+                    UPDATE Contact SET
+                        FirstName = @Nombre,
+                        LastName = @Apellidos, 
+                        Phone = @Telefono, 
+                        Address = @Direccion
                     WHERE id = @Id
                 ";
 
@@ -112,8 +112,8 @@ namespace WinFormsContacts
             {
                 conn.Open();
                 string query = @"
-                    SELECT id, Nombre, Apellidos, Telefono, Direccion
-                    FROM Contactos
+                    SELECT id, FirstName, LastName, Phone, Address
+                    FROM Contact
                 ";
 
                 SqlCommand sqlCommand = new SqlCommand(query, conn);
@@ -121,10 +121,10 @@ namespace WinFormsContacts
                 if (!string.IsNullOrEmpty(searchString))
                 {
                     query += @"
-                        WHERE Nombre LIKE @searchString
-                        OR Apellidos LIKE @searchString
-                        OR Telefono LIKE @searchString
-                        OR Direccion LIKE @searchString
+                        WHERE FirstName LIKE @searchString
+                        OR LastName LIKE @searchString
+                        OR Phone LIKE @searchString
+                        OR Address LIKE @searchString
                     ";
 
                     sqlCommand.Parameters.Add(new SqlParameter("@SearchString", $"%{searchString}%"));
@@ -140,10 +140,10 @@ namespace WinFormsContacts
                     contactos.Add(new Contacto
                     {
                         Id = int.Parse(reader["id"].ToString()),
-                        Nombre = reader["Nombre"].ToString(),
-                        Apellidos = reader["Apellidos"].ToString(),
-                        Telefono = reader["Telefono"].ToString(),
-                        Direccion = reader["Direccion"].ToString()
+                        Nombre = reader["FirstName"].ToString(),
+                        Apellidos = reader["LastName"].ToString(),
+                        Telefono = reader["Phone"].ToString(),
+                        Direccion = reader["Address"].ToString()
                     });
                 }
             }
@@ -165,7 +165,7 @@ namespace WinFormsContacts
             try
             {
                 conn.Open();
-                string query = @"DELETE FROM Contactos WHERE id = @Id";
+                string query = @"DELETE FROM Contact WHERE id = @Id";
 
                 SqlCommand command = new SqlCommand(query, conn);
                 command.Parameters.Add(new SqlParameter("@Id", id));
